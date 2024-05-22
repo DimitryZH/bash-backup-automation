@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 # Check if log file parameter is provided
@@ -15,9 +16,9 @@ BACKUP_ARCHIVE="/home/$USER/work_backup_$TIMESTAMP.tar.gz"
 
 # Ctrl+C handler function
 function ctrlc {
-    echo "Received Ctrl+C. Cleaning up..." | tee -a /home/$USER/$MYLOG
+    log "Received Ctrl+C. Cleaning up..."
     rm -rf $BACKUP_DIR
-    echo "Backup directory removed: $BACKUP_DIR" | tee -a /home/$USER/$MYLOG
+    log "Backup directory removed: $BACKUP_DIR"
     exit 255
 }
 
@@ -26,7 +27,7 @@ trap ctrlc SIGINT
 
 # Logging function
 function log {
-    echo "$(date +"%D %T") - $1" | tee -a /home/$USER/$MYLOG
+    echo "$(date +"%D %T") - $1" | tee -a $MYLOG
 }
 
 # Start logging
@@ -47,7 +48,7 @@ fi
 
 # Copy files
 log "Copying files from $SOURCE_DIR to $BACKUP_DIR"
-if ! cp -v $SOURCE_DIR/* $BACKUP_DIR/ >> /home/$USER/$MYLOG 2>&1; then
+if ! cp -vr $SOURCE_DIR/* $BACKUP_DIR/ >> $MYLOG 2>&1; then
     log "File copy operation failed. Exiting."
     exit 1
 fi
@@ -66,3 +67,4 @@ fi
 
 # Finish logging
 log "Script completed successfully."
+
